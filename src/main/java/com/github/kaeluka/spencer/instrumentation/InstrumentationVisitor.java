@@ -1,4 +1,4 @@
-package org.spencer.instrumentation;
+package com.github.kaeluka.spencer.instrumentation;
 
 import org.objectweb.asm.*;
 import org.objectweb.asm.commons.AdviceAdapter;

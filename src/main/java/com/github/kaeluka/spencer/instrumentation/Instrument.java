@@ -1,4 +1,4 @@
-package org.spencer.instrumentation;
+package com.github.kaeluka.spencer.instrumentation;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -80,12 +80,12 @@ public class Instrument {
 						ClassReader.EXPAND_FRAMES);
 				return classwriter.toByteArray();
 			} catch (RuntimeException ex) {
-				System.out.println("returning original bytecode1");
+//				System.out.println("returning original bytecode1");
 				logError(className, ex);
 				return byteCode;
 			}
 		} else {
-			System.out.println("returning original bytecode");
+//			System.out.println("returning original bytecode");
 			return byteCode;
 		}
 	}

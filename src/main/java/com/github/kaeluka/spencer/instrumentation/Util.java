@@ -1,4 +1,4 @@
-package org.spencer.instrumentation;
+package com.github.kaeluka.spencer.instrumentation;
 
 import java.io.File;
 
@@ -17,7 +17,7 @@ public class Util {
 				"java/util/AbstractList.class",
 				"java/util/HashMap.class",
 				"java/util/Vector.class",
-                                "java/util/LinkedList$ListItr",
+				"java/util/LinkedList$ListItr",
 				"java/lang/Shutdown",
 				"java/lang/System",
 //				"java/security/Permission",

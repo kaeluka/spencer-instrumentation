@@ -1,4 +1,4 @@
-package org.spencer.org.spencer.instrumentation;
+package com.github.kaeluka.spencer.instrumentation;
 
 import org.apache.commons.io.IOUtils;
 

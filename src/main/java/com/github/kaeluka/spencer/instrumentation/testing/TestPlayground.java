@@ -1,4 +1,4 @@
-package org.spencer.instrumentation.testing;
+package com.github.kaeluka.spencer.instrumentation.testing;
 
 public class TestPlayground {
 	private static int tesssst() {
