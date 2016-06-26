@@ -10,7 +10,7 @@
 
     <groupId>com.github.kaeluka</groupId>
     <artifactId>spencer-instrumentation</artifactId>
-    <version>0.1.2-SNAPSHOT</version>
+    <version>0.1.2</version>
     <packaging>jar</packaging>
     <url>https://github.com/kaeluka/spencer-instrumentation</url>
     <licenses>
@@ -40,7 +40,7 @@
         <url>scm:git:git@github.com:kaeluka/spencer-instrumentation.git</url>
 
 
-      <tag>HEAD</tag>
+      <tag>spencer-instrumentation-0.1.2</tag>
   </scm>
 
     <distributionManagement>
