@@ -3,6 +3,7 @@ package com.github.kaeluka.spencer.instrumentation;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
@@ -23,7 +24,7 @@ public class Instrument {
 	public static final boolean instrumentMethods = System.getProperty("org.spencer.instrumentation.methods.enable",   "true"). equals("true");;
 
 	protected static final boolean enableComments = System.getProperty("org.spencer.instrumentation.comments.enable",  "false").equals("true");
-	public static final boolean loudWarnings = System.getProperty("org.spencer.instrumentation.warnings.loud",         "true").equals("true");
+	public static final boolean loudWarnings = System.getProperty("org.spencer.instrumentation.warnings.loud",         "true"). equals("true");
 
 	public static final int SPECIAL_VAL_NORMAL = 0; // normal
 	public static final int SPECIAL_VAL_THIS   = 1; /*
@@ -56,38 +57,37 @@ public class Instrument {
 	}
 
 	public static boolean isInterface(final byte[] byteCode) {
-		final List<String> interfaces = Arrays.asList(new ClassReader(byteCode).getInterfaces());
-		final String className = new ClassReader(byteCode).getClassName();
-		return interfaces.contains(className);
+        return (new ClassReader(byteCode).getAccess() | Opcodes.ACC_INTERFACE) != 0;
 	}
 
 	public static byte[] transform(byte[] byteCode) {
 		final ClassReader classreader = new ClassReader(byteCode);
 		final String className = classreader.getClassName();
 
-		if (Instrument.enabled
-				&& (! Util.isClassNameBlacklisted(className))
-				) {
-			if ("test/Hello".equals(className)) {
-				System.out.println("transforming "+className);
-			}
-			try {
-				final ClassWriter classwriter = new ClassWriter(classreader, ClassWriter.COMPUTE_FRAMES);
-				final ClassVisitor checkingwriter = Instrument.checking ? check(classwriter)
-						: classwriter;
-				final ClassVisitor tracingwriter = Instrument.tracing ? trace(checkingwriter, className) : checkingwriter;
-				classreader.accept(new InstrumentationVisitor(tracingwriter),
-						ClassReader.EXPAND_FRAMES);
-				return classwriter.toByteArray();
-			} catch (RuntimeException ex) {
-//				System.out.println("returning original bytecode1");
-				logError(className, ex);
-				return byteCode;
-			}
-		} else {
-//			System.out.println("returning original bytecode");
-			return byteCode;
-		}
+        if (!Instrument.enabled) {
+//            System.out.println("returning original bytecode (disabled)");
+            return byteCode;
+        }
+
+        if (Util.isClassNameBlacklisted(className)) {
+//            System.out.println("returning original bytecode (class "+className+" blacklisted)");
+            return byteCode;
+        }
+
+        try {
+            final ClassWriter classwriter = new ClassWriter(classreader, ClassWriter.COMPUTE_FRAMES);
+            final ClassVisitor checkingwriter = Instrument.checking ? check(classwriter)
+                    : classwriter;
+            final ClassVisitor tracingwriter = Instrument.tracing ? trace(checkingwriter, className) : checkingwriter;
+            classreader.accept(new InstrumentationVisitor(tracingwriter),
+                    ClassReader.EXPAND_FRAMES);
+//            System.out.println("returning transformed class for "+className);
+            return classwriter.toByteArray();
+        } catch (RuntimeException ex) {
+//            System.out.println("returning original bytecode (exception: -- "+ex.getMessage()+")");
+            logError(className, ex);
+            return byteCode;
+        }
 	}
 
 	private static boolean logError(final String className, RuntimeException ex) {
